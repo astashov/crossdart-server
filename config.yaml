@@ -1,0 +1,7 @@
+output_dir: /Users/anton/csoutput
+working_dir: /Users/anton/csworking
+hosted_url: https://www.crossdart.info
+dart_sdk: /usr/local/opt/dart/libexec
+bucket: www.crossdart.info
+url_path_prefix: metadata
+crossdart_url_path_prefix: p
