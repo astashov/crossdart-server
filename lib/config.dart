@@ -30,11 +30,12 @@ class Config {
         outputDir: configValues["output_dir"],
         bucket: configValues["bucket"],
         dartSdk: configValues["dart_sdk"],
+        port: configValues["port"],
         credentials: serviceAccountCredentials);
   }
 
   Config._({
-      this.port: 5001,
+      this.port,
       this.hostedUrl,
       this.urlPathPrefix,
       this.workingDir,

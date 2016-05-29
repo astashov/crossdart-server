@@ -20,6 +20,11 @@ analyze(@app.Body(app.JSON) Map<String, String> jsonMap, @app.Inject() Config co
   return "ok";
 }
 
+@app.Route("/check", methods: const [app.GET])
+check() {
+  return "ok";
+}
+
 main(List<String> args) {
   var parser = new ArgParser();
   parser.addOption('dirroot', help: "Specify the application directory, if not current");

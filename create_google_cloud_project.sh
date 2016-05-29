@@ -7,7 +7,8 @@ gcloud compute instance-templates create crossdart-server \
     --image ubuntu-14-04 \
     --machine-type n1-standard-2 \
     --metadata-from-file startup-script=boot.sh \
-    --scopes storage-full,compute-ro
+    --scopes storage-full,compute-ro \
+    --tags crossdartserver
 
 gcloud compute instance-groups managed create crossdart-servers \
     --base-instance-name crossdart-servers \
