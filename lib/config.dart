@@ -17,9 +17,10 @@ class Config {
   final String bucket;
   final ServiceAccountCredentials credentials;
 
-  factory Config.build() {
-    var configValues = yaml.loadYaml(new File(p.join(Directory.current.path, "config.yaml")).readAsStringSync());
-    var credentialsValues = yaml.loadYaml(new File(p.join(Directory.current.path, "credentials.yaml")).readAsStringSync());
+  factory Config.build(String dirroot) {
+    dirroot ??= Directory.current.path;
+    var configValues = yaml.loadYaml(new File(p.join(dirroot, "config.yaml")).readAsStringSync());
+    var credentialsValues = yaml.loadYaml(new File(p.join(dirroot, "credentials.yaml")).readAsStringSync());
     var serviceAccountCredentials = new ServiceAccountCredentials.fromJson(JSON.encode(credentialsValues));
     return new Config._(
         hostedUrl: configValues["hosted_url"],
