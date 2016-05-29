@@ -25,6 +25,11 @@ check() {
   return "ok";
 }
 
+@app.Route("/", methods: const [app.GET])
+root() {
+  return "ok";
+}
+
 main(List<String> args) {
   var parser = new ArgParser();
   parser.addOption('dirroot', help: "Specify the application directory, if not current");
