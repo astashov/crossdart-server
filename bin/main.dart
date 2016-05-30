@@ -8,6 +8,7 @@ import 'package:crossdart_server/logging.dart' as logging;
 import 'package:di/di.dart';
 import 'dart:async';
 import 'package:args/args.dart';
+import 'dart:io';
 
 var _queue = new StreamController<Task>.broadcast();
 
@@ -23,6 +24,11 @@ analyze(@app.Body(app.JSON) Map<String, String> jsonMap, @app.Inject() Config co
 @app.Route("/check", methods: const [app.GET])
 check() {
   return "ok";
+}
+
+@app.Route("/664B9659BC5EA761A6DE1B31C6C0C603.txt", methods: const [app.GET])
+sslCheck() {
+  return new File("/crossdart-server/664B9659BC5EA761A6DE1B31C6C0C603.txt").readAsStringSync();
 }
 
 @app.Route("/", methods: const [app.GET])
