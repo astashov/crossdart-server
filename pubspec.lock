@@ -91,6 +91,12 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.3.10"
+  frappe:
+    description:
+      name: frappe
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.0+6"
   glob:
     description:
       name: glob
@@ -271,6 +277,12 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.4.0"
+  stream_transformers:
+    description:
+      name: stream_transformers
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0+3"
   string_scanner:
     description:
       name: string_scanner
@@ -283,6 +295,12 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.1"
+  tasks:
+    description:
+      name: tasks
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
   test:
     description:
       name: test

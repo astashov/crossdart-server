@@ -11,3 +11,4 @@ dependencies:
   logging: '>=0.9.3'
   http: '>=0.11.1'
   yaml: any
+  tasks: any

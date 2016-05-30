@@ -6,3 +6,4 @@ bucket: www.crossdart.info
 url_path_prefix: metadata
 crossdart_url_path_prefix: p
 port: 5001
+gc_project: manifest-craft-100803

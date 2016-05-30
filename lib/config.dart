@@ -16,6 +16,7 @@ class Config {
   final String dartSdk;
   final String bucket;
   final ServiceAccountCredentials credentials;
+  final String gcProject;
 
   factory Config.build(String dirroot) {
     dirroot ??= Directory.current.path;
@@ -31,6 +32,7 @@ class Config {
         bucket: configValues["bucket"],
         dartSdk: configValues["dart_sdk"],
         port: configValues["port"],
+        gcProject: configValues["gc_project"],
         credentials: serviceAccountCredentials);
   }
 
@@ -42,6 +44,7 @@ class Config {
       this.outputDir,
       this.dartSdk,
       this.bucket,
+      this.gcProject,
       this.crossdartUrlPathPrefix,
       this.credentials});
 }

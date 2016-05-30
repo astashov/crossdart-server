@@ -10,6 +10,6 @@ class Task {
   Task(this.token, this.url, this.sha);
 
   String get repoName {
-    return p.joinAll(url.split("/").reversed.take(2).toList().reversed);
+    return p.joinAll(url.split("/").reversed.take(2).toList().reversed.toList()..add(sha));
   }
 }

@@ -1,23 +1,19 @@
-library crossdart_server;
+library crossdart_server.bin.server;
 
 import 'package:redstone/redstone.dart' as app;
 import 'package:crossdart_server/config.dart';
 import 'package:crossdart_server/task.dart';
-import 'package:crossdart_server/generator.dart';
 import 'package:crossdart_server/logging.dart' as logging;
 import 'package:di/di.dart';
 import 'dart:async';
 import 'package:args/args.dart';
-import 'dart:io';
+import 'package:crossdart_server/pubsub.dart';
 
 var _queue = new StreamController<Task>.broadcast();
 
 @app.Route("/analyze", methods: const [app.POST])
-analyze(@app.Body(app.JSON) Map<String, String> jsonMap, @app.Inject() Config config) {
-  var token = jsonMap["token"];
-  var url = jsonMap["url"];
-  var sha = jsonMap["sha"];
-  _queue.add(new Task(token, url, sha));
+analyze(@app.Body(app.JSON) Map<String, String> jsonMap, @app.Inject() Config config, @app.Inject() Pubsub pubsub) async {
+  await pubsub.publish("crossdart-server", {"token": jsonMap["token"], "url": jsonMap["url"], "sha": jsonMap["sha"]});
   return "ok";
 }
 
@@ -26,17 +22,7 @@ check() {
   return "ok";
 }
 
-@app.Route("/664B9659BC5EA761A6DE1B31C6C0C603.txt", methods: const [app.GET])
-sslCheck() {
-  return new File("/crossdart-server/664B9659BC5EA761A6DE1B31C6C0C603.txt").readAsStringSync();
-}
-
-@app.Route("/", methods: const [app.GET])
-root() {
-  return "ok";
-}
-
-main(List<String> args) {
+Future<Null> main(List<String> args) async {
   var parser = new ArgParser();
   parser.addOption('dirroot', help: "Specify the application directory, if not current");
   parser.addFlag('help', negatable: false, help: "Show help");
@@ -50,10 +36,8 @@ main(List<String> args) {
   logging.initialize();
 
   var config = new Config.build(argsResults["dirroot"]);
-  app.addModule(new Module()..bind(Config, toValue: config));
-  app.start(port: config.port);
+  var pubsub = new Pubsub(config);
 
-  _queue.stream.listen((Task task) {
-    new Generator(config, task).run();
-  });
+  app.addModule(new Module()..bind(Config, toValue: config)..bind(Pubsub, toValue: pubsub));
+  app.start(port: config.port);
 }
