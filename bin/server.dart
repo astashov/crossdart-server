@@ -14,22 +14,15 @@ import 'package:crossdart_server/generator.dart';
 var _queue = new StreamController<Task>.broadcast();
 
 @app.Interceptor(r'/.*')
-handleCors(@app.Inject() Config config) {
-  var requestOrigin = app.request.headers["origin"];
-  if (requestOrigin != null) {
-    var headers = {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, X-Csrf-Token",
-      "Access-Control-Allow-Methods": "OPTIONS, POST"
-    };
-    if (app.request.method != "OPTIONS") {
-      app.chain.next(() => app.response.change(headers: headers));
-    } else {
-      app.chain.createResponse(200, responseValue: new shelf.Response.ok("", headers: headers));
-    }
-  } else {
-    app.chain.next();
+handleCORS() async {
+  if (app.request.method != "OPTIONS") {
+    await app.chain.next();
   }
+  return app.response.change(headers: {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, X-Csrf-Token",
+    "Access-Control-Allow-Methods": "OPTIONS, POST"
+  });
 }
 
 @app.Route("/analyze", methods: const [app.POST])
