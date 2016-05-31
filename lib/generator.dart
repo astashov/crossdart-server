@@ -22,20 +22,22 @@ class Generator {
   Future<Null> run() async {
     List<LogRecord> logs = [];
     try {
-      await _updateStatus("installing");
+      await updateStatus("installing");
       await _install(logs);
-      await _updateStatus("crossdartizing");
+      await updateStatus("crossdartizing");
       await _crossdartize(logs);
-      await _updateStatus("uploading");
+      await updateStatus("uploading");
       await _upload();
-      await _updateStatus("done");
+      await updateStatus("done");
       await _cleanup();
+    } catch(_, __) {
+      await updateStatus("error");
     } finally {
       await _uploadLogs(logs);
     }
   }
 
-  Future<Null> _updateStatus(String status) async {
+  Future<Null> updateStatus(String status) async {
     await _storage.insertContent(p.join(_targetUrl, "status.txt"), status, "text/plain");
   }
 

@@ -1,6 +1,7 @@
 library crossdart_server.bin.server;
 
 import 'package:redstone/redstone.dart' as app;
+import 'package:shelf/shelf.dart' as shelf;
 import 'package:crossdart_server/config.dart';
 import 'package:crossdart_server/task.dart';
 import 'package:crossdart_server/logging.dart' as logging;
@@ -8,12 +9,34 @@ import 'package:di/di.dart';
 import 'dart:async';
 import 'package:args/args.dart';
 import 'package:crossdart_server/pubsub.dart';
+import 'package:crossdart_server/generator.dart';
 
 var _queue = new StreamController<Task>.broadcast();
+
+@app.Interceptor(r'/.*')
+handleCors(@app.Inject() Config config) {
+  var requestOrigin = app.request.headers["origin"];
+  if (requestOrigin != null) {
+    var headers = {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, X-Csrf-Token",
+      "Access-Control-Allow-Methods": "OPTIONS, POST"
+    };
+    if (app.request.method != "OPTIONS") {
+      app.chain.next(() => app.response.change(headers: headers));
+    } else {
+      app.chain.createResponse(200, responseValue: new shelf.Response.ok("", headers: headers));
+    }
+  } else {
+    app.chain.next();
+  }
+}
 
 @app.Route("/analyze", methods: const [app.POST])
 analyze(@app.Body(app.JSON) Map<String, String> jsonMap, @app.Inject() Config config, @app.Inject() Pubsub pubsub) async {
   await pubsub.publish("crossdart-server", {"token": jsonMap["token"], "url": jsonMap["url"], "sha": jsonMap["sha"]});
+  var generator = new Generator(config, new Task(jsonMap["token"], jsonMap["url"], jsonMap["sha"]));
+  await generator.updateStatus("queued");
   return "ok";
 }
 
