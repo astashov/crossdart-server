@@ -10,8 +10,10 @@ import 'dart:async';
 import 'package:args/args.dart';
 import 'package:crossdart_server/pubsub.dart';
 import 'package:crossdart_server/generator.dart';
+import 'package:logging/logging.dart';
 
 var _queue = new StreamController<Task>.broadcast();
+var _logger = new Logger("crossdart_server.server");
 
 @app.Interceptor(r'/.*')
 handleCORS() async {
@@ -27,6 +29,7 @@ handleCORS() async {
 
 @app.Route("/analyze", methods: const [app.POST])
 analyze(@app.Body(app.JSON) Map<String, String> jsonMap, @app.Inject() Config config, @app.Inject() Pubsub pubsub) async {
+  _logger.info("POST /analyze ${jsonMap}");
   await pubsub.publish("crossdart-server", {"token": jsonMap["token"], "url": jsonMap["url"], "sha": jsonMap["sha"]});
   var generator = new Generator(config, new Task(jsonMap["token"], jsonMap["url"], jsonMap["sha"]));
   await generator.updateStatus("queued");
