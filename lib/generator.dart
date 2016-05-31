@@ -38,7 +38,7 @@ class Generator {
   }
 
   Future<Null> updateStatus(String status) async {
-    await _storage.insertContent(p.join(_targetUrl, "status.txt"), status, "text/plain");
+    await _storage.insertContent(p.join(_targetUrl, "status.txt"), status, "text/plain", maxAge: 0);
   }
 
   Future<Null> _install(List<LogRecord> logs) async {
