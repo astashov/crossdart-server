@@ -30,18 +30,22 @@ class Generator {
       await updateStatus("uploading");
       await _upload();
       await updateStatus("done");
-      await _cleanup();
     } catch(_, __) {
       await updateStatus("error");
     } finally {
       await _uploadLogs(logs);
+      await _cleanup();
     }
   }
 
-  Future<bool> doesExist() async {
+  Future<bool> doesCrossdartJsonExist() async {
     var url = _config.hostedUrl + "/" + p.join(_targetUrl, "crossdart.json");
     var response = await head(url);
     return response.statusCode == 200;
+  }
+
+  bool get isProcessing {
+    return new File(_repoDir).existsSync();
   }
 
   Future<Null> updateStatus(String status) async {

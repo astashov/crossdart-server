@@ -33,10 +33,12 @@ Future<Null> main(List<String> args) async {
       var json = await pubsub.pull(subscription);
       _logger.info("Processing ${json["url"]}/${json["sha"]}");
       var generator = new Generator(config, new Task(json["token"], json["url"], json["sha"]));
-      if (!(await generator.doesExist())) {
-        await generator.run();
-      } else {
+      if (generator.isProcessing) {
+        _logger.info("${json["url"]}/${json["sha"]} is already being processed");
+      } else if (await generator.doesCrossdartJsonExist()) {
         _logger.info("crossdart.json for ${json["url"]}/${json["sha"]} already exists");
+      } else {
+        await generator.run();
       }
     }, concurrencyCount: 2);
   }
