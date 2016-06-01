@@ -1,7 +1,6 @@
 library crossdart_server.bin.server;
 
 import 'package:redstone/redstone.dart' as app;
-import 'package:shelf/shelf.dart' as shelf;
 import 'package:crossdart_server/config.dart';
 import 'package:crossdart_server/task.dart';
 import 'package:crossdart_server/logging.dart' as logging;

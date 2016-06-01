@@ -9,6 +9,7 @@ import 'dart:io';
 import 'package:crossdart_server/run_command_error.dart';
 import 'package:crossdart_server/storage.dart';
 import 'package:crossdart_server/logging.dart' as logging;
+import 'package:http/http.dart';
 
 var _logger = new Logger("crossdart_server.generator");
 
@@ -35,6 +36,11 @@ class Generator {
     } finally {
       await _uploadLogs(logs);
     }
+  }
+
+  Future<bool> doesExist() async {
+    var response = await head(p.join(_targetUrl, "crossdart.json"));
+    return response.statusCode == 200;
   }
 
   Future<Null> updateStatus(String status) async {
