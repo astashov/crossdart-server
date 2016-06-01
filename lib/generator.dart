@@ -72,7 +72,7 @@ class Generator {
     var path = p.join(_targetUrl, "crossdart.json");
     _logger.info("Started uploading crossdart.json to GCS ($path)");
     var file = new File(p.join(_repoDir, "crossdart.json"));
-    await _storage.insertFile(path, file);
+    await _storage.insertFile(path, file, maxAge: 30);
     _logger.info("Finished uploading crossdart.json to GCS");
   }
 
