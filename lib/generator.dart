@@ -39,7 +39,8 @@ class Generator {
   }
 
   Future<bool> doesExist() async {
-    var response = await head(p.join(_targetUrl, "crossdart.json"));
+    var url = _config.hostedUrl + "/" + p.join(_targetUrl, "crossdart.json");
+    var response = await head(url);
     return response.statusCode == 200;
   }
 

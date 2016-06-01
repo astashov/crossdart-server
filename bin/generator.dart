@@ -35,6 +35,8 @@ Future<Null> main(List<String> args) async {
       var generator = new Generator(config, new Task(json["token"], json["url"], json["sha"]));
       if (!(await generator.doesExist())) {
         await generator.run();
+      } else {
+        _logger.info("crossdart.json for ${json["url"]}/${json["sha"]} already exists");
       }
     }, concurrencyCount: 2);
   }
