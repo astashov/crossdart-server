@@ -44,10 +44,6 @@ class Generator {
     return response.statusCode == 200;
   }
 
-  bool get isProcessing {
-    return new File(_repoDir).existsSync();
-  }
-
   Future<Null> updateStatus(String status) async {
     await _storage.insertContent(p.join(_targetUrl, "status.txt"), status, "text/plain", maxAge: 0);
   }
@@ -83,7 +79,7 @@ class Generator {
     var path = p.join(_targetUrl, "crossdart.json");
     _logger.info("Started uploading crossdart.json to GCS ($path)");
     var file = new File(p.join(_repoDir, "crossdart.json"));
-    await _storage.insertFile(path, file, maxAge: 30);
+    await _storage.insertFile(path, file, maxAge: 0);
     _logger.info("Finished uploading crossdart.json to GCS");
   }
 
@@ -91,7 +87,7 @@ class Generator {
     var path = p.join(_targetUrl, "log.txt");
     _logger.info("Started uploading logs to GCS ($path)");
     var contents = logs.map((logRecord) => logging.logFormatter(null, logRecord)).join("\n");
-    await _storage.insertContent(path, contents, "text/plain");
+    await _storage.insertContent(path, contents, "text/plain", maxAge: 0);
     _logger.info("Finished uploading logs to GCS");
   }
 

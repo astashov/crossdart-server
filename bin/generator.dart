@@ -9,8 +9,9 @@ import 'package:args/args.dart';
 import 'package:crossdart_server/pubsub.dart';
 import 'packages/tasks/utils.dart';
 import 'package:logging/logging.dart';
+import 'package:crossdart_server/global_lock.dart';
 
-var _logger = new Logger("crossdart_server.bin.generator");
+Logger _logger = new Logger("crossdart_server.bin.generator");
 
 Future<Null> main(List<String> args) async {
   var parser = new ArgParser();
@@ -31,14 +32,21 @@ Future<Null> main(List<String> args) async {
   while(true) {
     await pmap(new List.filled(50, "crossdart-server"), (subscription) async {
       var json = await pubsub.pull(subscription);
-      _logger.info("Processing ${json["url"]}/${json["sha"]}");
-      var generator = new Generator(config, new Task(json["token"], json["url"], json["sha"]));
-      if (generator.isProcessing) {
-        _logger.info("${json["url"]}/${json["sha"]} is already being processed");
-      } else if (await generator.doesCrossdartJsonExist()) {
-        _logger.info("crossdart.json for ${json["url"]}/${json["sha"]} already exists");
+      var globalLock = new GlobalLock(config, "${json["url"]}/${json["sha"]}");
+      if (await (globalLock.acquire())) {
+        try {
+          _logger.info("Processing ${json["url"]}/${json["sha"]}");
+          var generator = new Generator(config, new Task(json["token"], json["url"], json["sha"]));
+          if (await generator.doesCrossdartJsonExist()) {
+            _logger.info("crossdart.json for ${json["url"]}/${json["sha"]} already exists");
+          } else {
+            await generator.run();
+          }
+        } finally {
+          await globalLock.release();
+        }
       } else {
-        await generator.run();
+        _logger.info("${json["url"]}/${json["sha"]} is already being processed");
       }
     }, concurrencyCount: 2);
   }

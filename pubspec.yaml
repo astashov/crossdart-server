@@ -6,6 +6,7 @@ dependencies:
   redstone: any
   args: '>=0.12.2'
   googleapis: any
+  googleapis_beta: any
   googleapis_auth: any
   intl: '>=0.8.6'
   logging: '>=0.9.3'
